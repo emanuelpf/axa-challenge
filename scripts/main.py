@@ -15,8 +15,8 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score
 
-testing = True         # True, wenn nur ein kleiner Test-Datensatz geladen werden soll, False, wenn alle Daten geladen werden sollen
-all_accidents = True   # True, wenn alle Unfälle geladen werden sollen // False, wenn nur die Unfälle mit Radfahrerbeteiligung geladen werden sollen
+testing = False         # True, wenn nur ein kleiner Test-Datensatz geladen werden soll, False, wenn alle Daten geladen werden sollen
+all_accidents = False   # True, wenn alle Unfälle geladen werden sollen // False, wenn nur die Unfälle mit Radfahrerbeteiligung geladen werden sollen
 
 ###################################################
 ## 0. Importe, Konfigurationen, Vorbereitungen  ##
