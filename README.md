@@ -29,14 +29,14 @@ Die Logik folgt folgenden Hauptschritten:
 4. Modell: Bau eines kleinen Modells, das für eine Kooperation Citibike<->Versicherung einschätz, ob für eine Fahrt ein erhöhtes Unfallrisiko vorliegt.
 
 Ergebnis:
-Ein Modell, dass auf Basis der Merkmale Ausleihzeitpunkt (Uhrzeit in h), Ausleihort (Stationsname), und Nutzertyp (Member/Casual) beurteilt, ob eine bevorstehende Fahrt tendenziell risikogefährdet ist oder nicht (Reele Zahl zwischen 0 und 1).
-Eine Mögliche Kooperation bzw. ein Produkt kann dann beispielsweise sein, dass Citibike seinen Kunden per App warnt: "Achtung, bei der bevorstehenden Fahrt erkennen wir ein erhöhtes Riskio, bitte pass auf dich auf!" und damit die Versicherungsprämie senkt (Hypothetisch erfolgen dadurch weniger Unfälle). Oder aber das Modell kann verwendet werden, um in der Kooperation von Versicherungsseite Risikozuschläge für Citibike für bestimmte Fahrten im Vorfeld zu bestimmen. In jedem Fall ist das Risiko on-demand quantifiziert und vor der Fahrt bestimmt.
+Ein Modell, dass auf Basis der Merkmale Ausleihzeitpunkt (Uhrzeit in h), Ausleihort (Stationsname), und Nutzertyp (Member/Casual) beurteilt, ob eine bevorstehende Fahrt tendenziell risikogefährdet ist oder nicht (reele Zahl zwischen 0 und 1).
+Eine mögliche Kooperation bzw. ein Produkt kann dann beispielsweise sein, dass Citibike seinen Kunden per App warnt: "Achtung, bei der bevorstehenden Fahrt erkennen wir ein erhöhtes Riskio, bitte pass auf dich auf!" und damit die Versicherungsprämie senkt (Hypothetisch erfolgen dadurch weniger Unfälle). Oder aber das Modell kann verwendet werden, um in der Kooperation von Versicherungsseite Risikozuschläge für Citibike für bestimmte Fahrten im Vorfeld zu bestimmen. In jedem Fall ist das Risiko on-demand quantifiziert und vor der Fahrt bestimmt.
 
 ### Teil 0
 Daten werden geladen. Ich betrachte aus der Polizeistatistik nur Unfälle, bei denen Fahrradfahrer beteiligt sind. -> Erhalte zwei dataframes `citibike_df` und `accidents_df`, mit denen im folgenden gearbeitet wird.
 
 ### Teil 1
-Das `main.py` Skript beginnt damit einige Verteilungen aus den Daten zu erstellen, um aus diesen etwas zu lernen. Sie finden sich im Ordner `results/01_explorative_data_analysis`.
+Das `main.py` Skript beginnt damit einige Verteilungen aus den Daten zu erstellen, um aus diesen etwas zu lernen. Sie finden sich im Ordner `results/01_explorative_data_analysis`, im folgenden wird ein kleiner Teil der wichtigsten Statistiken gezeigt.
 
 Beispiele:
 
@@ -111,6 +111,8 @@ Es hat eine Tiefe von 5. MSE, R^2 und Cross validation sehen gut aus, auch Wahre
 Stellen wir also noch ein anderes Modell auf, diesmal ein `GradientBoostingRegressor` mit einer Tiefe von 3 und einer LR von 0.1. Dieser Regressor zeigt ziemlich gute Ergebnisse (auf dem Testdatensatz):
 
 ![](./results/03_model/gbr_risk_prediction_scatterplot.png)
+
+Die Residuen sehen jetzt besser aus:
 ![](./results/03_model/gbr_residuals_plot.png)
 
 MSE geht gegen 0, R^2 gegen 1.

@@ -15,8 +15,8 @@ from sklearn.ensemble import GradientBoostingRegressor
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_squared_error, r2_score
 
-testing = False         # True, wenn nur ein kleiner Test-Datensatz geladen werden soll, False, wenn alle Daten geladen werden sollen
-all_accidents = False   # True, wenn alle Unfälle geladen werden sollen // False, wenn nur die Unfälle mit Radfahrerbeteiligung geladen werden sollen
+testing = True         # True, wenn nur ein kleiner Test-Datensatz geladen werden soll, False, wenn alle Daten geladen werden sollen
+all_accidents = True   # True, wenn alle Unfälle geladen werden sollen // False, wenn nur die Unfälle mit Radfahrerbeteiligung geladen werden sollen
 
 ###################################################
 ## 0. Importe, Konfigurationen, Vorbereitungen  ##
@@ -32,7 +32,7 @@ if not testing:
 
     dfs = []
 
-    # Lade alle Dateien und speichere sie in einer Liste von DataFrames
+    # Alle Dateien laden und speichern in einer Liste  von DataFrames
     for file in tqdm(csv_files, desc="Processing Citibike files"):
         file_path = os.path.join(directory, file)
 
@@ -55,7 +55,7 @@ else:
     citibike_df = pd.read_csv("../data/citibike/202301-citibike-tripdata_1.csv", parse_dates=["started_at", "ended_at"])
 
 
-# Lade NYPD Unfälle und paar Transformationen
+# NYPD Unfälle laden und paar Transformationen
 accidents_df = pd.read_csv("../data/nypd/Motor_Vehicle_Collisions_-_Crashes_20250502.csv")
 accidents_df["CRASH DATE"] = pd.to_datetime(accidents_df["CRASH DATE"], format='%m/%d/%Y', errors='coerce')
 accidents_df["CRASH TIME"] = pd.to_datetime(accidents_df["CRASH TIME"], format='%H:%M', errors='coerce')
@@ -143,7 +143,8 @@ print("Modus Fahrtzeit (min):", citibike_df["duration_min"].mode()[0])
 # 2. Verteilung über Tageszeit: Start
 citibike_df["hour_start"] = citibike_df["started_at"].dt.hour
 plt.figure(figsize=(10, 5))
-plt.hist(citibike_df["hour"], bins=range(25), align='left', density=True)
+plt.hist(citibike_df["hour"], bins=range(0,25), align='left', density=True)
+plt.xticks(range(0, 24), ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]) 
 plt.title("Anzahl der Ausleihen nach Tageszeit (Start)")
 plt.xlabel("Stunde (0–23)")
 plt.ylabel("Relative Anzahl Fahrten")
@@ -153,7 +154,8 @@ plt.savefig("../results/01_explorative_data_analysis/rides_per_hour_start.png")
 # 2.1 Verteilung über Tageszeit: Ende
 citibike_df["hour_end"] = citibike_df["ended_at"].dt.hour
 plt.figure(figsize=(10, 5))
-plt.hist(citibike_df["hour"], bins=range(25), align='left', density=True)
+plt.hist(citibike_df["hour"], bins=range(0,25), align='left', density=True)
+plt.xticks(range(0, 24), ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]) 
 plt.title("Anzahl der Ausleihen nach Tageszeit (Ende)")
 plt.xlabel("Stunde (0–23)")
 plt.ylabel("Relative Anzahl Fahrten")
@@ -175,7 +177,7 @@ plt.savefig("../results/01_explorative_data_analysis/rides_per_hour_end.png")
 citibike_df["month"] = citibike_df["started_at"].dt.month
 plt.figure(figsize=(10, 5))
 # sns.countplot(x="month", data=citibike_df)
-plt.hist(citibike_df["month"], bins=12, align='left')
+plt.hist(citibike_df["month"], bins=range(1,14), align='left')
 plt.xticks(range(1, 13), ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"])
 plt.title("Anzahl der Ausleihen nach Monat")
 plt.xlabel("Monat")
@@ -184,16 +186,17 @@ plt.tight_layout()
 plt.savefig("../results/01_explorative_data_analysis/rides_per_month.png")
 
 # 4. Verteilung nach Wochentag
-citibike_df["weekday"] = citibike_df["started_at"].dt.day_name()
 weekdays_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-plt.figure(figsize=(10, 5))
-plt.hist(citibike_df["weekday"], bins=7, align='left')
-plt.title("Fahrten nach Wochentag")
-plt.xlabel("Wochentag")
-plt.ylabel("Anzahl Fahrten")
-plt.xticks(rotation=45)
-plt.tight_layout()
-plt.savefig("../results/01_explorative_data_analysis/rides_per_weekday.png")
+citibike_df["weekday"] = citibike_df["started_at"].dt.day_name()
+# plt.figure(figsize=(10, 5))
+# plt.hist(citibike_df["weekday"], bins=range(1,9), align='left')
+# plt.xticks(range(1, 8), weekdays_order)
+# plt.title("Fahrten nach Wochentag")
+# plt.xlabel("Wochentag")
+# plt.ylabel("Anzahl Fahrten")
+# plt.xticks(rotation=45)
+# plt.tight_layout()
+# plt.savefig("../results/01_explorative_data_analysis/rides_per_weekday.png")
 
 # 5. Nutzergruppenanalyse: member vs. casual
 plt.figure(figsize=(10, 5))
@@ -319,7 +322,7 @@ print("\nHeatmap gespeichert als accidents_heatmap.html")
 
 ### Plot der Unfälle über Wochentage
 plt.figure(figsize=(10, 5))
-plt.hist(accidents_df["CRASH DATE"].dt.day, bins=7, align='left')
+plt.hist(accidents_df["CRASH DATE"].dt.day, bins=range(1,9), align='left')
 plt.title("Unfälle nach Wochentag")
 plt.xlabel("Wochentag")
 plt.ylabel("Anzahl Unfälle")
@@ -329,7 +332,7 @@ plt.savefig("../results/01_explorative_data_analysis/accidents_per_weekday.png")
 
 # # Plot der Unfälle über Monate
 plt.figure(figsize=(10, 5))
-plt.hist(accidents_df["CRASH DATE"].dt.month, bins=range(1,13), align='left')
+plt.hist(accidents_df["CRASH DATE"].dt.month, bins=range(1,14), align='left')
 plt.title("Unfälle nach Monat")
 plt.xlabel("Monat")
 plt.ylabel("Anzahl Unfälle")
@@ -339,13 +342,13 @@ plt.savefig("../results/01_explorative_data_analysis/accidents_per_month.png")
 
 # # Plot der Unfälle über Tageszeit
 plt.figure(figsize=(10, 5))
-plt.hist(accidents_df["CRASH TIME"].dt.hour, bins=range(25), align='left')
+plt.hist(accidents_df["CRASH TIME"].dt.hour, bins=range(0,25), align='left')
 plt.title("Unfälle nach Tageszeit")
 plt.xlabel("Stunde (0–23)")
+plt.xticks(range(0, 24), ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]) 
 plt.ylabel("Anzahl Unfälle")
 plt.tight_layout()
 plt.savefig("../results/01_explorative_data_analysis/accidents_per_hour.png")
-
 
 
 ###########################################################################
@@ -454,13 +457,13 @@ for user_type in ['member', 'casual']:
              bins=100, alpha=0.5, label=f'{user_type.capitalize()}', 
              color=colors[user_type], density=True)
 
-    # Berechne und plotte die Median für jede Gruppe
+    # Berechnung und Plotten des Medians für jede Gruppe
     median_duration = data["duration_min"].median()
     medians[user_type] = median_duration
     plt.axvline(median_duration, color=colors[user_type], linestyle='dashed', linewidth=1, 
                 label=f'Median {user_type.capitalize()}: {median_duration:.2f} min')
 
-# Berechne den prozentualen Unterschied der Mediane
+# Berechnung des prozentualen Unterschieds der Mediane
 median_diff_percent_duration = ((medians['casual'] - medians['member']) / medians['member']) * 100
 print(f"Die median duration ist {median_diff_percent_duration:.2f}% höher für casual Nutzer als für member Nutzer.")
 # -> Der Unterschied ist schon deutlich, möglicherweise ein Indiz für höhere Unfallgefahr, wenn sie länger fahren. Für mich an diesem Punkt jetzt eine Annahme/Hypothese.
@@ -481,12 +484,12 @@ for user_type in ['member', 'casual']:
              bins=100, alpha=0.5, label=f'{user_type.capitalize()}', 
              color=colors[user_type], density=True)
 
-    # Berechne und plotte die Median für jede Gruppe
+    # Berechnung und Plotten des Medians für jede Gruppe
     median_distance = data["distance_km"].median()
     medians[user_type] = median_distance
     plt.axvline(median_distance, color=colors[user_type], linestyle='dashed', linewidth=1, 
                 label=f'Median {user_type.capitalize()}: {median_distance:.2f} km')
-# Berechne den prozentualen Unterschied der Mediane
+# Berechnung des prozentualen Unterschieds der Mediane
 median_diff_percent_distance = ((medians['casual'] - medians['member']) / medians['member']) * 100
 print(f"Die median distance ist {median_diff_percent_distance:.2f}% höher für casual Nutzer als für member Nutzer.")
 
@@ -599,7 +602,7 @@ print(f"Durchschnittlicher R^2: {scores.mean():.4f}")
 print(f"Standardabweichung: {scores.std():.4f}")
 
 
-# check if the model is overfitting, wenn train r^2 viel höher ist als test r^2, dann overfitting
+# Prüfen, ob das Modell overfitted, wenn train r^2 viel höher ist als test r^2, dann overfitting
 y_train_pred = model.predict(X_train)
 train_r2 = r2_score(y_train, y_train_pred)
 test_r2 = r2_score(y_test, y_pred)
